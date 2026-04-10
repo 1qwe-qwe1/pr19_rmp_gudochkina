@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView timePick;
     private Button btnDate;
     private Button btnTime;
+    private Button btnDialog;
     private Calendar dateAndTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +36,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         timePick = findViewById(R.id.time_pick);
         btnDate = findViewById(R.id.btn_date);
         btnTime = findViewById(R.id.btn_time);
+        btnDialog = findViewById(R.id.btn_dialog);
 
         btnDate.setOnClickListener(this);
         btnTime.setOnClickListener(this);
+        btnDialog.setOnClickListener(this);
 
         setInitialDateTime();
     }
@@ -80,6 +84,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     dateAndTime.get(Calendar.HOUR_OF_DAY),
                     dateAndTime.get(Calendar.MINUTE), true)
                     .show();
+        } else if (id == R.id.btn_dialog) {
+            CustomDialogFragment dialog = new CustomDialogFragment();
+            String currentDateTime = timePick.getText().toString();
+            dialog.setReceivedData(currentDateTime);
+            dialog.show(getSupportFragmentManager(), "CUSTOM_DIALOG");
         }
     }
+    public void onDialogResult(String result) {
+        timePick.setText(result);
+        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+    }
+
 }
