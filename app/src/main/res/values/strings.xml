@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">pr19_rmp_gudochkina</string>
+
+    <string name="show_date">Показать дату</string>
+    <string name="show_time">Показать время</string>
+
+    <string name="current_datetime">Текущая дата и время</string>
 </resources>

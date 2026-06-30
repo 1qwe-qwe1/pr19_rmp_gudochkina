@@ -17,15 +17,20 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, CustomDialogFragment.DialogFragmentListener {
 
     private TextView timePick;
-    private Button btnDate;
-    private Button btnTime;
-    private Button btnDialog;
+    private Button btnDate, btnTime, btnDialog;
     private Calendar dateAndTime;
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +51,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setInitialDateTime() {
-        timePick.setText(DateUtils.formatDateTime(this,
-                dateAndTime.getTimeInMillis(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
-                        | DateUtils.FORMAT_SHOW_TIME));
+        timePick.setText(dateFormat.format(dateAndTime.getTime()));
     }
 
+    // Установка обработчика выбора времени
     TimePickerDialog.OnTimeSetListener t = new TimePickerDialog.OnTimeSetListener() {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             dateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+    // Установка обработчика выбора даты
     DatePickerDialog.OnDateSetListener d = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             dateAndTime.set(Calendar.YEAR, year);
@@ -92,8 +96,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     public void onDialogResult(String result) {
-        timePick.setText(result);
-        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+        try {
+            Date newDate = dateFormat.parse(result);
+
+            dateAndTime.setTime(newDate);
+            timePick.setText(result);
+
+            Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+
+        } catch (ParseException e) {
+            Toast.makeText(this, "Неверный формат! Ожидается дд.мм.гггг чч:мм", Toast.LENGTH_LONG).show();
+        }
     }
 
 }
